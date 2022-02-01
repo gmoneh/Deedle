@@ -509,6 +509,28 @@ let ``Reconstructing frame from its columns does not break equals (#91)``() =
 
 
 // ------------------------------------------------------------------------------------------------
+// Option saving
+// ------------------------------------------------------------------------------------------------
+
+type PriceOptional = { Open : decimal option; High : decimal option; Low : Decimal option; Close : decimal option }
+[<Test>]
+let ``Saving data with option fields``() =
+  let prices = [
+      { Open = Some 10m; High = Some 15m; Low = Some 5m; Close = Some 12m }
+      { Open = None; High = Some 15m; Low = Some 5m; Close = Some 12m }
+      { Open = Some 10m; High = None; Low = Some 5m; Close = Some 12m }
+      { Open = Some 10m; High = Some 15m; Low = None; Close = Some 12m }
+      { Open = Some 10m; High = Some 15m; Low = Some 5m; Close = None }
+      { Open = Some 10m; High = None; Low = None; Close = None }
+  ]
+  let f = Frame.ofRecords prices
+  let file = System.IO.Path.GetTempFileName()
+  
+  Assert.DoesNotThrow (fun () -> f.SaveCsv(file, includeRowKeys = false))
+
+
+
+// ------------------------------------------------------------------------------------------------
 // Accessor testing
 // ------------------------------------------------------------------------------------------------
 
