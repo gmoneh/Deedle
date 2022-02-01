@@ -1,15 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>2.5.5</Version>
     <OutputPath>../../bin/</OutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.Runtime" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="FSharp.Data\Net\Http.fs" />
     <Compile Include="FSharp.Data\CommonRuntime\TextConversions.fsi" />
