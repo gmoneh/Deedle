@@ -312,9 +312,22 @@ module internal FrameUtils =
           // default of 100ns fractional second precision
           dt.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz", ci) ) ] |> dict
 
+    let mapOptionValue (o: obj) =
+      let typ = o.GetType()
+      if typ.IsGenericType && typ.GetGenericTypeDefinition() = typedefof<option<_>> then
+        let getProxy =
+          match <@@ Option.get @@> with
+          | Quotations.Patterns.Lambda(_ , Quotations.Patterns.Call(_, mi, _)) -> mi.GetGenericMethodDefinition()
+          | _ -> failwith "Failed to get method info for 'Option.get'"
+        let innertype = typ.GetGenericArguments()
+        let getProxy = getProxy.MakeGenericMethod innertype
+        let v = getProxy.Invoke(null, [|o|]) 
+        v
+      else o
+
     // Format optional value, using
     let formatOptional (typ, opt:obj option) =
-      match opt, formatters.TryGetValue(typ) with
+      match opt |> Option.map mapOptionValue, formatters.TryGetValue(typ) with
       | Some null, _ | None, _ -> ""
       | Some value, (true, formatter) -> formatter value
       | Some value, _ when typeof<IFormattable>.IsAssignableFrom(typ) ->
